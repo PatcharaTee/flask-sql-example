@@ -37,6 +37,7 @@ class Subject(db.Model):
         primary_key=True
     )
     name = Column(String)
+    professor = Column(String(50))
     major_id = Column(Integer, ForeignKey(Major.id))
 
     major: Mapped[Major] = relationship(

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Flask-SQL-Example</title>
+</head>
+
+<body>
+    <h1>Major</h1>
+    <form method="post" action="{{ url_for( 'subject.create_subject' ) }}">
+        <label for="name">Add Subject:</label>
+        <input type="text" name="name" placeholder="Subject name"><br>
+        <fieldset style="width: 200px;">
+            <legend>Select a major</legend>
+            {% for major in majors %}
+            <div>
+                <input type="radio" name="major_id" id="{{ major.id }}" value="{{ major.id }}">
+                <label for="{{ major.id }}">{{ major.name }}</label>
+            </div>
+            {% endfor %}
+        </fieldset><br>
+        <input type="submit" value="Submit">
+    </form>
+    <p>List:</p>
+    <ol>
+        {% for subject in subjects %}
+        <li>{{ subject.name }} - {{ subject.professor }} - {{ subject.major.name }}</li>
+        <button type="button" onclick="deleteSubject({{ subject.id }})">Delete</button>
+        <button type="button" onclick="toggleEditForm({{ subject.id }})">Edit</button>
+        <div style="display: none;" id="edit-form-{{ subject.id }}">
+            <form method="post" action="{{ url_for( 'subject.update_subject', sid=subject.id ) }}">
+                <input type="text" name="name" placeholder="Subject name">
+                <input type="text" name="professor" placeholder="Professor name">
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        {% endfor %}
+    </ol>
+</body>
+<script>
+    function deleteSubject(sid) {
+        url = "{{ url_for( 'subject.delete_subject') }}?id=" + sid
+        fetch(
+            url,
+            {
+                method: 'DELETE',
+                redirect: 'follow'
+            }
+        ).then(res => {
+            window.location.replace("{{ url_for( 'subject.subject' ) }}")
+        })
+    }
+
+    function toggleEditForm(sid) {
+        if (document.getElementById("edit-form-" + sid).style.display == "block") {
+            document.getElementById("edit-form-" + sid).style.display = "none"
+        } else {
+            document.getElementById("edit-form-" + sid).style.display = "block"
+        }
+    }
+</script>
+
+</html>

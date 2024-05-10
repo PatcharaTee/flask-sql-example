@@ -31,9 +31,16 @@ def create_app() -> Flask:
     with app.app_context():
         db.create_all()
 
-    from .views import index, major
+    from .views import index, major, student, subject
     app.register_blueprint(index.bp)
     app.register_blueprint(major.bp)
+    app.register_blueprint(student.bp)
+    app.register_blueprint(subject.bp)
+
+    from .exceptions import (InvalidSubjectID, MissingRequiredKey,
+                             exception_handler)
+    app.register_error_handler(MissingRequiredKey, exception_handler)
+    app.register_error_handler(InvalidSubjectID, exception_handler)
 
     print("All registered routes.")
     for route in app.url_map.iter_rules():

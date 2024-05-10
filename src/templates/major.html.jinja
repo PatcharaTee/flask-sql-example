@@ -8,8 +8,32 @@
 
 <body>
     <h1>Major</h1>
-    <form>
+    <form method="post" action="{{ url_for( 'major.create_major' ) }}">
+        <label for="name">Add major:</label>
+        <input type="text" name="name" placeholder="Major name"><br>
+        <input type="submit" value="Submit">
     </form>
+    <p>List:</p>
+    <ol>
+        {% for major in majors %}
+        <li>{{ major.name }}</li>
+        <button type="button" onclick="deleteMajor({{ major.id }})">Delete</button>
+        {% endfor %}
+    </ol>
 </body>
+<script>
+    function deleteMajor(mid) {
+        url = "{{ url_for( 'major.delete_major') }}?id=" + mid
+        fetch(
+            url,
+            {
+                method: 'DELETE',
+                redirect: 'follow'
+            }
+        ).then(res => {
+            window.location.replace("{{ url_for( 'major.major' ) }}")
+        })
+    }
+</script>
 
 </html>
